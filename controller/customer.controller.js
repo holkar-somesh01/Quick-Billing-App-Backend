@@ -15,6 +15,9 @@ exports.RegisterCustomer = asyncHandler(async (req, res) => {
     if (!validator.isMobilePhone(mobile, "en-IN")) {
         return res.status(400).json({ message: "In Valid Mobile" })
     }
+    if (!validator.isEmail(email)) {
+        return res.status(400).json({ message: "Please Enter Valid Email" })
+    }
     await Customer.create({ name, email, mobile, address, userId })
     res.json({ message: "Customer Register Success" })
 })

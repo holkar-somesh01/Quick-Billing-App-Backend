@@ -13,7 +13,7 @@ exports.RegisterAdmin = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "All Feiled Required", error })
     }
     if (!validator.isEmail(email)) {
-        return res.status(400).json({ message: "Invalid Email" })
+        return res.status(400).json({ message: "Enter Valid Email" })
     }
     if (!validator.isStrongPassword(password)) {
         return res.status(400).json({ message: "Provide Strong Password" })
@@ -33,15 +33,15 @@ exports.LoginAdmin = asyncHandler(async (req, res) => {
         return res.status(401).json({ message: "All Fields required" })
     }
     if (!validator.isEmail(email)) {
-        return res.status(401).json({ message: process.env.NODE_ENV === "development" ? "invalid email" : "Invalid Credentials" })
+        return res.status(401).json({ message: "Please Enter Valid Email" })
     }
     const isFound = await Auth.findOne({ email })
     if (!isFound) {
-        return res.status(401).json({ message: process.env.NODE_ENV === "development" ? "invalid email" : "Invalid Credentials" })
+        return res.status(401).json({ message: "Email Not Found" })
     }
     const isVerify = await bcrypt.compare(password, isFound.password)
     if (!isVerify) {
-        return res.status(401).json({ message: process.env.NODE_ENV === "development" ? "invalid password" : "Invalid Credentials" })
+        return res.status(401).json({ message: "Password Do Not Match" })
     }
 
     const otp = Math.floor(10000 + Math.random() * 900000)
@@ -73,7 +73,7 @@ exports.VerifyOTP = asyncHandler(async (req, res) => {
     }
     const isFound = await Auth.findOne({ email })
     if (!isFound) {
-        return res.status(401).json({ message: process.env.NODE_ENV === "development" ? "invalid email" : "Invalid Credentials" })
+        return res.status(401).json({ message: "Email Not Found" })
     }
     if (otp !== isFound.otp) {
         return res.status(401).json({ message: "Invalid OTP" })
