@@ -16,7 +16,7 @@ exports.AddProduct = asyncHandler(async (req, res) => {
             if (err) {
                 return res.status(500).json({ message: "File upload error", error: err.message });
             }
-            const { name, price, desc, qty, unit, userId } = req.body;
+            const { name, price, desc, qty, unit, } = req.body;
             const { isError, error } = checkEmpty({ name, price, desc, qty, unit });
             if (isError) {
                 return res.status(401).json({ message: "All Fields Required", error: error });
@@ -26,7 +26,7 @@ exports.AddProduct = asyncHandler(async (req, res) => {
                 const { secure_url } = await cloudinary.uploader.upload(req.file.path)
                 images = secure_url
             }
-            await Products.create({ name, price, desc, qty, unit, images: images, userId: userId })
+            await Products.create({ name, price, desc, qty, unit, images: images, userId: req.loggedInUser })
             res.json({ message: "Product Successfully Added" })
         })
     } catch (error) {
